@@ -46,20 +46,23 @@
 
 ---
 
-## 5. Identiti Visual & Sistem Template Poster (1080×1350, 4:5)
-Berdasarkan sampel poster sedia ada di `@dharmasyamim`, kita kunci **2 Tema Visual Utama** (boleh digabung dengan latar visual AI secara Hybrid):
+## 5. Identiti Visual & Brandkit Rasmi (`@adabclosing` × Seamless 4-Slide Square Editorial, 1080×1080)
+Mengikut brandkit rasmi **`@adabclosing`** digabungkan dengan gaya **Seamless Magazine Collage (4320×1080 → potong 4 × 1080×1080, nisbah 1:1 supaya sempurna di kedua-dua IG Carousel & FB Page 2×2 grid)**:
 
-### Tema A: **Bold Contrarian (Kuning + Hitam + Merah)** — *Untuk Hook Viral & Tips Sales*
-- **Latar:** Kuning terang (`#F6C90E`) atau latar foto gelap dengan blok kuning (`#FFD21F`)
-- **Teks:** Hitam pekat (`#111111`) + aksen Merah (`#D91E18`) pada kata kunci utama
-- **Tag Atas:** Pill `SIR DHARMA · SALES`
-- **Tipografi:** Bold Sans-Serif (`Montserrat ExtraBold` / `Anton` / `Plus Jakarta Sans ExtraBold`)
+### Palet Rasmi `@adabclosing`
+- **Kanvas Light Mode:** Putih bersih (`#FFFFFF`) dengan garisan grid kertas editorial emerald halus (`rgba(11, 93, 59, 0.08)`)
+- **Blok / Dark Mode:** Hijau Hutan Gelap (`#0A2418`)
+- **Primary Emerald:** `#0B5D3B` (kad nota gelap, garisan lengkung *seamless*, teks penekanan)
+- **Bright Emerald:** `#22C55E` / `#1FA463` (border pil siri, titik `●`, pil tindakan `✓`)
+- **Signature Gold / Yellow:** `#FFD60A` / `#FFD21F` (kotak highlight senget `-1.6°` dengan teks hitam pekat `#0A0A0A`)
+- **Body Ink:** `#111814` | **Myth/Error Red:** `#E0533D` (`✕`)
 
-### Tema B: **Luxury Mentor (Emerald Gelap + Emas + Putih)** — *Untuk Authority Carousel, Cerita & Soft-Sell*
-- **Latar:** Hijau Emerald gelap (`#0D2E1A`) dengan tekstur halus / visual AI gelap elegan
-- **Teks:** Putih bersih (`#FFFFFF`) + Emas (`#D4AF37`) pada frasa penekanan
-- **Elemen Khas:** Garis aksen emas nipis, `BY SIR DHARMA`, penunjuk slaid `01 / 05` & `Swipe untuk tahu lebih →`
-- **Tipografi:** Gabungan Serif elegan (`Playfair Display`) untuk tajuk + Sans-Serif bersih (`Inter` / `Plus Jakarta Sans`) untuk isi
+### Tipografi & Elemen Signature
+- **Display Headline:** `Anton` (huruf besar *condensed* yang padu dan senang dibaca dari jauh)
+- **Setup / Nota Tangan:** `Kalam` (700 — tulisan tangan santai & personal)
+- **Body & Kad UI:** `Inter` (500 / 700 / 800 / 900, tracking kemas)
+- **Elemen Seamless:** Garisan lengkung SVG emerald+kuning merentasi 4 slaid, foto editorial dalam bingkai Polaroid melintas sempadan slaid (`1080px`, `2160px`, `3240px`), pil siri `● NOTA SALES #01`, dan pil CTA hijau `✓` / sticker senget di Slaid 4.
+- **Pantang Larang Visual (Wajib Patuh):** **ELAKKAN** sebarang gambar wanita yang tidak bertudung (sama ada gambar stok atau gambar janaan AI). Utamakan gambar sebenar Sir Dharma, suasana kopi/meja kerja/telefon/buku nota, usahawan lelaki, atau usahawan wanita bertudung sopan.
 
 ---
 

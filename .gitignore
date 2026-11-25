@@ -6,5 +6,8 @@ Gemini Output/
 Personal Inteligence/
 projects/
 brands/*/discovery/
+brands/*/photos/
+brands/*/drafts/
+brands/*/assets/
 __pycache__/
 *.pyc
