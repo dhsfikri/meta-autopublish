@@ -1,0 +1,10 @@
+node_modules/
+out/
+.env
+video production/
+Gemini Output/
+Personal Inteligence/
+projects/
+brands/*/discovery/
+__pycache__/
+*.pyc

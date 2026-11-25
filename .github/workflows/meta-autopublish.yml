@@ -1,0 +1,56 @@
+name: Meta Auto-Publish (FB Page + IG)
+
+on:
+  schedule:
+    # Jalan setiap 30 minit untuk semak post yang sudah sampai waktu (MYT +08:00)
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: "Nama folder jenama dalam brands/"
+        required: true
+        default: "sir-dharma-syamim"
+      dry_run:
+        description: "Uji tanpa publish sebenar"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Meta Scheduler
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+        run: |
+          BRAND="${{ github.event.inputs.brand || 'sir-dharma-syamim' }}"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python scripts/meta_scheduler.py --brand "$BRAND" --dry-run
+          else
+            python scripts/meta_scheduler.py --brand "$BRAND"
+          fi
+
+      - name: Commit updated queue.json
+        run: |
+          git config user.name "Meta AutoPublisher Bot"
+          git config user.email "autopublisher@users.noreply.github.com"
+          if ! git diff --quiet brands/; then
+            git add brands/
+            git commit -m "chore(meta): update published queue status"
+            git push
+          else
+            echo "Tiada perubahan pada queue.json."
+          fi
