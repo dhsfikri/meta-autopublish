@@ -109,6 +109,24 @@ def run_scheduler(brand: str, dry_run: bool = False, env_path: pathlib.Path | No
                 if not post.get("fb_only") and ig_id:
                     result["instagram"] = meta_client.publish_to_instagram(ig_id, ptoken, image_urls, caption)
 
+                # Auto-publish Slide 1 as a seamless 9:16 Story to both FB Page & IG (default: True)
+                if post.get("share_to_story", True):
+                    story_url = post.get("story_url") or meta_client.make_story_url(
+                        image_urls[0], post.get("theme", "")
+                    )
+                    if not post.get("ig_only"):
+                        try:
+                            result["facebook_story"] = meta_client.publish_story_to_facebook(pid, ptoken, story_url)
+                        except BaseException as se:
+                            result["facebook_story_error"] = str(se)
+                            print(f"[WARN] FB Story gagal untuk '{post_id}': {se}", file=sys.stderr)
+                    if not post.get("fb_only") and ig_id:
+                        try:
+                            result["instagram_story"] = meta_client.publish_story_to_instagram(ig_id, ptoken, story_url)
+                        except BaseException as se:
+                            result["instagram_story_error"] = str(se)
+                            print(f"[WARN] IG Story gagal untuk '{post_id}': {se}", file=sys.stderr)
+
             post["status"] = "published"
             post["published_at"] = datetime.now(MYT).isoformat(timespec="seconds")
             post["meta_result"] = result

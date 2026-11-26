@@ -285,6 +285,45 @@ def cmd_learn(args: argparse.Namespace) -> None:
     print(f"- Sampel visual    : {len(downloaded)} gambar di {samples_dir}")
 
 
+def make_story_url(image_url: str, theme: str = "") -> str:
+    """Convert a Cloudinary 1:1 URL into a seamless 9:16 (1080x1920) Story URL via on-the-fly padding."""
+    if "/image/upload/" not in image_url:
+        return image_url
+    bg_hex = "0B5D3B" if "dark" in (theme or "").lower() else "FFFFFF"
+    return image_url.replace("/image/upload/", f"/image/upload/c_pad,w_1080,h_1920,b_rgb:{bg_hex}/", 1)
+
+
+def publish_story_to_facebook(page_id: str, page_token: str, image_url: str) -> dict:
+    photo = graph_request(
+        "POST",
+        f"{page_id}/photos",
+        page_token,
+        form_data={"url": image_url, "published": "false"},
+    )
+    return graph_request(
+        "POST",
+        f"{page_id}/photo_stories",
+        page_token,
+        form_data={"photo_id": photo["id"]},
+    )
+
+
+def publish_story_to_instagram(ig_id: str, page_token: str, image_url: str) -> dict:
+    container = graph_request(
+        "POST",
+        f"{ig_id}/media",
+        page_token,
+        form_data={"image_url": image_url, "media_type": "STORIES"},
+    )
+    time.sleep(3)
+    return graph_request(
+        "POST",
+        f"{ig_id}/media_publish",
+        page_token,
+        form_data={"creation_id": container["id"]},
+    )
+
+
 def publish_to_facebook(page_id: str, page_token: str, image_urls: list[str], caption: str) -> dict:
     if len(image_urls) == 1:
         return graph_request(
