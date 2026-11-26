@@ -358,6 +358,124 @@ def publish_to_instagram(ig_id: str, page_token: str, image_urls: list[str], cap
     )
 
 
+def publish_reel_to_facebook(
+    page_id: str,
+    page_token: str,
+    video_url: str,
+    caption: str,
+) -> dict:
+    """Publish a Reel to Facebook Page via Meta Graph API video_reels 3-step hosted URL flow."""
+    start = graph_request(
+        "POST",
+        f"{page_id}/video_reels",
+        page_token,
+        form_data={"upload_phase": "start"},
+    )
+    video_id = start["video_id"]
+    upload_url = start["upload_url"]
+
+    req = urllib.request.Request(
+        upload_url,
+        data=b"",
+        headers={
+            "Authorization": f"OAuth {page_token}",
+            "file_url": video_url,
+            "Accept": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=180) as resp:
+            upload_res = json.loads(resp.read().decode("utf-8"))
+            if not upload_res.get("success", True):
+                raise RuntimeError(f"FB Reel hosted upload failed: {upload_res}")
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        print(f"FB Reel Upload Error HTTP {e.code}: {err_body}", file=sys.stderr)
+        sys.exit(1)
+
+    finish = graph_request(
+        "POST",
+        f"{page_id}/video_reels",
+        page_token,
+        form_data={
+            "upload_phase": "finish",
+            "video_id": video_id,
+            "video_state": "PUBLISHED",
+            "description": caption,
+        },
+    )
+    finish["video_id"] = video_id
+    return finish
+
+
+def publish_reel_to_instagram(
+    ig_id: str,
+    page_token: str,
+    video_url: str,
+    caption: str,
+    cover_url: str | None = None,
+    share_to_feed: bool = False,
+) -> dict:
+    """Publish a Reel to Instagram Business Account via Graph API REELS container + status polling."""
+    form = {
+        "media_type": "REELS",
+        "video_url": video_url,
+        "caption": caption,
+        "share_to_feed": "true" if share_to_feed else "false",
+    }
+    if cover_url:
+        form["cover_url"] = cover_url
+
+    container = graph_request("POST", f"{ig_id}/media", page_token, form_data=form)
+    creation_id = container["id"]
+
+    # Poll until IG finishes processing the video container (max ~3 minutes)
+    for _ in range(36):
+        time.sleep(5)
+        st = graph_request_safe("GET", creation_id, page_token, params={"fields": "status_code,status"})
+        code = (st or {}).get("status_code")
+        if code == "FINISHED":
+            break
+        if code in ("ERROR", "EXPIRED"):
+            raise RuntimeError(f"IG Reel container gagal diproses: {st}")
+
+    return graph_request(
+        "POST",
+        f"{ig_id}/media_publish",
+        page_token,
+        form_data={"creation_id": creation_id},
+    )
+
+
+def cmd_publish_reel(args: argparse.Namespace) -> None:
+    token = get_config("META_ACCESS_TOKEN", env_path=args.env)
+    page_id_cfg = args.page_id or get_config("META_PAGE_ID", required=False, env_path=args.env)
+    target = resolve_target(token, page_id=page_id_cfg or None)
+    page_id = target["id"]
+    page_token = target.get("access_token") or token
+    ig_id = (target.get("instagram_business_account") or {}).get("id")
+
+    caption = pathlib.Path(args.caption_file).read_text(encoding="utf-8").strip() if args.caption_file else args.caption
+    results = {}
+    if not args.ig_only:
+        results["facebook"] = publish_reel_to_facebook(page_id, page_token, args.video_url, caption)
+    if not args.fb_only:
+        if not ig_id:
+            print("WARNING: Tiada IG Business Account dipautkan, langkau IG.", file=sys.stderr)
+        else:
+            results["instagram"] = publish_reel_to_instagram(
+                ig_id,
+                page_token,
+                args.video_url,
+                caption,
+                cover_url=args.cover_url,
+                share_to_feed=args.share_to_feed,
+            )
+
+    print(json.dumps(results, indent=2, ensure_ascii=False))
+
+
 def cmd_publish(args: argparse.Namespace) -> None:
     token = get_config("META_ACCESS_TOKEN", env_path=args.env)
     page_id_cfg = args.page_id or get_config("META_PAGE_ID", required=False, env_path=args.env)
@@ -402,6 +520,16 @@ def main() -> None:
     p_pub.add_argument("--fb-only", action="store_true")
     p_pub.add_argument("--ig-only", action="store_true")
 
+    p_reel = sub.add_parser("publish-reel", help="Publish video Reel (MP4) ke FB Page & IG Reels")
+    p_reel.add_argument("--page-id", default=None, help="Facebook Page ID")
+    p_reel.add_argument("--video-url", required=True, help="Public HTTPS MP4 URL (contoh: Cloudinary)")
+    p_reel.add_argument("--cover-url", default=None, help="Public HTTPS cover PNG/JPG URL (untuk IG Reel)")
+    p_reel.add_argument("--caption", default="", help="Teks kapsyen")
+    p_reel.add_argument("--caption-file", default=None, help="Fail teks mengandungi kapsyen")
+    p_reel.add_argument("--fb-only", action="store_true")
+    p_reel.add_argument("--ig-only", action="store_true")
+    p_reel.add_argument("--share-to-feed", action="store_true", help="Papar juga Reel di IG Profile Grid (default: Reels tab sahaja)")
+
     args = parser.parse_args()
     if args.command == "verify":
         cmd_verify(args)
@@ -409,6 +537,8 @@ def main() -> None:
         cmd_learn(args)
     elif args.command == "publish":
         cmd_publish(args)
+    elif args.command == "publish-reel":
+        cmd_publish_reel(args)
 
 
 if __name__ == "__main__":

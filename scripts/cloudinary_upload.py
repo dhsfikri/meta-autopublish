@@ -78,6 +78,7 @@ def upload_image(
     file_path: pathlib.Path,
     folder: str = "meta-auto",
     env_path: pathlib.Path | None = None,
+    resource_type: str = "image",
 ) -> str:
     if not file_path.exists():
         print(f"ERROR: Fail tidak ditemui: {file_path}", file=sys.stderr)
@@ -86,6 +87,10 @@ def upload_image(
     cloud_name = get_config("CLOUDINARY_CLOUD_NAME", env_path=env_path)
     api_key = get_config("CLOUDINARY_API_KEY", env_path=env_path)
     api_secret = get_config("CLOUDINARY_API_SECRET", env_path=env_path)
+
+    if resource_type == "auto":
+        ext = file_path.suffix.lower()
+        resource_type = "video" if ext in (".mp4", ".mov", ".m4v", ".webm") else "image"
 
     timestamp = str(int(time.time()))
     params_to_sign = {"folder": folder, "timestamp": timestamp}
@@ -98,7 +103,7 @@ def upload_image(
         "signature": signature,
     }
     body, content_type = build_multipart(fields, "file", file_path)
-    url = f"https://api.cloudinary.com/v1_1/{cloud_name}/image/upload"
+    url = f"https://api.cloudinary.com/v1_1/{cloud_name}/{resource_type}/upload"
     req = urllib.request.Request(
         url,
         data=body,
@@ -108,8 +113,9 @@ def upload_image(
         },
         method="POST",
     )
+    timeout_sec = 300 if resource_type == "video" else 60
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return data["secure_url"]
     except urllib.error.HTTPError as e:
@@ -144,8 +150,9 @@ def verify_credentials(env_path: pathlib.Path | None = None) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Upload poster images to Cloudinary for IG Graph API")
-    parser.add_argument("files", nargs="*", type=pathlib.Path, help="Fail gambar PNG/JPG untuk diupload")
+    parser.add_argument("files", nargs="*", type=pathlib.Path, help="Fail gambar PNG/JPG atau video MP4 untuk diupload")
     parser.add_argument("--folder", default="meta-auto/sir-dharma-syamim", help="Folder Cloudinary")
+    parser.add_argument("--type", dest="resource_type", default="auto", choices=["auto", "image", "video"], help="Jenis fail (default: auto)")
     parser.add_argument("--env", type=pathlib.Path, default=None, help="Path ke fail .env")
     parser.add_argument("--verify", action="store_true", help="Uji sambungan API Cloudinary sahaja")
     args = parser.parse_args()
@@ -155,12 +162,12 @@ def main() -> None:
         return
 
     if not args.files:
-        print("Sila nyatakan fail gambar atau guna --verify", file=sys.stderr)
+        print("Sila nyatakan fail atau guna --verify", file=sys.stderr)
         sys.exit(1)
 
     urls = []
     for f in args.files:
-        url = upload_image(f, folder=args.folder, env_path=args.env)
+        url = upload_image(f, folder=args.folder, env_path=args.env, resource_type=args.resource_type)
         urls.append(url)
         print(url)
 

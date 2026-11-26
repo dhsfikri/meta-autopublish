@@ -60,10 +60,19 @@ def run_scheduler(brand: str, dry_run: bool = False, env_path: pathlib.Path | No
     changed = False
     for post in due_posts:
         post_id = post.get("id", "unknown")
+        is_reel = post.get("format") == "reel" or bool(post.get("video_url"))
+        video_url = post.get("video_url")
+        cover_url = post.get("cover_url")
         image_urls = post.get("image_urls", [])
         caption = post.get("caption", "")
 
-        if not image_urls:
+        if is_reel and not video_url:
+            print(f"[SKIP] {post_id}: format reel tetapi tiada video_url.", file=sys.stderr)
+            post["status"] = "failed"
+            post["error"] = "Missing video_url"
+            changed = True
+            continue
+        if not is_reel and not image_urls:
             print(f"[SKIP] {post_id}: tiada image_urls.", file=sys.stderr)
             post["status"] = "failed"
             post["error"] = "Missing image_urls"
@@ -71,7 +80,8 @@ def run_scheduler(brand: str, dry_run: bool = False, env_path: pathlib.Path | No
             continue
 
         if dry_run:
-            print(f"[DRY-RUN] Akan publish '{post_id}' ({len(image_urls)} gambar) ke FB Page & IG.")
+            kind = "Reel MP4" if is_reel else f"{len(image_urls)} gambar"
+            print(f"[DRY-RUN] Akan publish '{post_id}' ({kind}) ke FB Page & IG.")
             print(f"          Jadual: {post['scheduled_at']} | Kapsyen: {caption[:80]}...")
             continue
 
@@ -81,10 +91,23 @@ def run_scheduler(brand: str, dry_run: bool = False, env_path: pathlib.Path | No
             ig_id = (target.get("instagram_business_account") or {}).get("id")
 
             result = {}
-            if not post.get("ig_only"):
-                result["facebook"] = meta_client.publish_to_facebook(pid, ptoken, image_urls, caption)
-            if not post.get("fb_only") and ig_id:
-                result["instagram"] = meta_client.publish_to_instagram(ig_id, ptoken, image_urls, caption)
+            if is_reel:
+                if not post.get("ig_only"):
+                    result["facebook"] = meta_client.publish_reel_to_facebook(pid, ptoken, video_url, caption)
+                if not post.get("fb_only") and ig_id:
+                    result["instagram"] = meta_client.publish_reel_to_instagram(
+                        ig_id,
+                        ptoken,
+                        video_url,
+                        caption,
+                        cover_url=cover_url,
+                        share_to_feed=bool(post.get("share_to_feed", False)),
+                    )
+            else:
+                if not post.get("ig_only"):
+                    result["facebook"] = meta_client.publish_to_facebook(pid, ptoken, image_urls, caption)
+                if not post.get("fb_only") and ig_id:
+                    result["instagram"] = meta_client.publish_to_instagram(ig_id, ptoken, image_urls, caption)
 
             post["status"] = "published"
             post["published_at"] = datetime.now(MYT).isoformat(timespec="seconds")
