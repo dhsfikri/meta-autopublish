@@ -487,6 +487,86 @@ def publish_reel_to_instagram(
     )
 
 
+def publish_story_to_instagram(
+    ig_id: str,
+    page_token: str,
+    video_url: str,
+) -> dict:
+    """Publish a Video Story (<=60s) to Instagram Business Account via Graph API STORIES container."""
+    container = graph_request(
+        "POST",
+        f"{ig_id}/media",
+        page_token,
+        form_data={
+            "media_type": "STORIES",
+            "video_url": video_url,
+        },
+    )
+    creation_id = container["id"]
+    for _ in range(36):
+        time.sleep(5)
+        st = graph_request_safe("GET", creation_id, page_token, params={"fields": "status_code,status"})
+        code = (st or {}).get("status_code")
+        if code == "FINISHED":
+            break
+        if code in ("ERROR", "EXPIRED"):
+            raise RuntimeError(f"IG Story container gagal diproses: {st}")
+
+    return graph_request(
+        "POST",
+        f"{ig_id}/media_publish",
+        page_token,
+        form_data={"creation_id": creation_id},
+    )
+
+
+def publish_story_to_facebook(
+    page_id: str,
+    page_token: str,
+    video_url: str,
+) -> dict:
+    """Publish a Video Story (<=60s) to Facebook Page via Graph API video_stories hosted URL flow."""
+    start = graph_request(
+        "POST",
+        f"{page_id}/video_stories",
+        page_token,
+        form_data={"upload_phase": "start"},
+    )
+    video_id = start["video_id"]
+    upload_url = start["upload_url"]
+
+    req = urllib.request.Request(
+        upload_url,
+        data=b"",
+        headers={
+            "Authorization": f"OAuth {page_token}",
+            "file_url": video_url,
+            "Accept": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=180) as resp:
+            upload_res = json.loads(resp.read().decode("utf-8"))
+            if not upload_res.get("success", True):
+                raise RuntimeError(f"FB Story hosted upload failed: {upload_res}")
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        raise RuntimeError(f"FB Story Upload Error HTTP {e.code}: {err_body}") from e
+
+    finish = graph_request(
+        "POST",
+        f"{page_id}/video_stories",
+        page_token,
+        form_data={
+            "upload_phase": "finish",
+            "video_id": video_id,
+        },
+    )
+    finish["video_id"] = video_id
+    return finish
+
+
 def cmd_publish_reel(args: argparse.Namespace) -> None:
     token = get_config("META_ACCESS_TOKEN", env_path=args.env)
     page_id_cfg = args.page_id or get_config("META_PAGE_ID", required=False, env_path=args.env)

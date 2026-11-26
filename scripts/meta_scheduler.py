@@ -103,6 +103,18 @@ def run_scheduler(brand: str, dry_run: bool = False, env_path: pathlib.Path | No
                         cover_url=cover_url,
                         share_to_feed=bool(post.get("share_to_feed", False)),
                     )
+                if post.get("post_to_story"):
+                    story_url = post.get("story_video_url") or video_url
+                    if not post.get("ig_only"):
+                        try:
+                            result["facebook_story"] = meta_client.publish_story_to_facebook(pid, ptoken, story_url)
+                        except (SystemExit, Exception) as se:
+                            result["facebook_story_error"] = str(se)
+                    if not post.get("fb_only") and ig_id:
+                        try:
+                            result["instagram_story"] = meta_client.publish_story_to_instagram(ig_id, ptoken, story_url)
+                        except (SystemExit, Exception) as se:
+                            result["instagram_story_error"] = str(se)
             else:
                 if not post.get("ig_only"):
                     result["facebook"] = meta_client.publish_to_facebook(pid, ptoken, image_urls, caption)
