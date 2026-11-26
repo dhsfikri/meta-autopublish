@@ -2,8 +2,8 @@ name: Meta Auto-Publish (FB Page + IG)
 
 on:
   schedule:
-    # Jalan setiap 30 minit untuk semak post yang sudah sampai waktu (MYT +08:00)
-    - cron: "*/30 * * * *"
+    # Jalan pada minit ke-5 dan ke-35 setiap jam (elak kesesakan server GitHub pada :00/:30)
+    - cron: "5,35 * * * *"
   workflow_dispatch:
     inputs:
       brand:
