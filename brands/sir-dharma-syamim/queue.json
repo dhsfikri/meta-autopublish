@@ -32,13 +32,25 @@
     {
       "id": "c0244-follow-up-minggu-gaji",
       "scheduled_at": "2026-11-26T14:00:00+08:00",
-      "status": "pending",
+      "status": "published",
       "format": "reel",
       "share_to_feed": false,
       "pillar": "Nilai",
       "caption": "Minggu gaji ni masih hantar ayat \"cik jadi ke beli?\" dekat prospek? Itu punca utama mesej selalu kena bluetick.\n\nCuba tukar cara follow up dengan tanya pasal masalah prospek dulu. Ini susunan ayat yang boleh terus guna hari ni:\n1. Ingatkan balik sebab asal dia PM (\"hari tu cik ada tanya pasal produk ni sebab nak selesaikan masalah ni kan?\")\n2. Tanya keadaan semasa (\"masalah cik tu dah selesai ke? dah jumpa produk yang sesuai?\")\n3. Baru masuk cadangan dan offer (\"kalau belum, cuba try produk saya, alang-alang hari ni memang ada offer\")\n\nSave video ni supaya senang rujuk masa follow up prospek hari ni.\nAwak jual produk atau servis apa bulan ni? Komen kat bawah dan follow @dharmasyamim untuk lagi skrip closing WhatsApp.\n\n#SirDharma #AdabClosing #CaraFollowUp #SkripWhatsApp #UsahawanMalaysia",
       "video_url": "https://res.cloudinary.com/qwpwajil/video/upload/v1795673752/meta-auto/sir-dharma-syamim/reels/c0244-hq/mzmpc7dmmfwp4z9xgtyp.mp4",
-      "cover_url": "https://res.cloudinary.com/qwpwajil/image/upload/v1795664872/meta-auto/sir-dharma-syamim/reels/c0244/iwtnle3qiqe9dv593wol.png"
+      "cover_url": "https://res.cloudinary.com/qwpwajil/image/upload/v1795664872/meta-auto/sir-dharma-syamim/reels/c0244/iwtnle3qiqe9dv593wol.png",
+      "published_at": "2026-11-26T14:30:46+08:00",
+      "meta_result": {
+        "facebook": {
+          "success": true,
+          "message": "Video is Processing. To check the status of the video, please follow the instructions listed at https://developers.facebook.com/docs/video-api/guides/reels-publishing#get-the-upload-status.",
+          "post_id": "1732204808916012",
+          "video_id": "2113251946001344"
+        },
+        "instagram": {
+          "id": "18158044543524623"
+        }
+      }
     },
     {
       "id": "w1-02-thu-pm",
