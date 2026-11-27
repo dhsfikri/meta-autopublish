@@ -184,14 +184,35 @@
     {
       "id": "c0246-kenapa-kata-mahal",
       "scheduled_at": "2026-11-27T21:30:00+08:00",
-      "status": "pending",
+      "status": "published",
       "format": "reel",
       "share_to_feed": false,
       "post_to_story": true,
       "pillar": "Nilai",
       "caption": "Ramai penjual terus mengalah bila prospek cakap mahal. Padahal ikut pengalaman saya, hampir 80% puncanya datang daripada cara kita sendiri mengurus perbualan dalam Wassap.\n\nBila prospek rasa dia belum perlu, tiada sebab untuk beli sekarang, atau belum nampak nilai sebenar produk, ayat paling senang dia bagi ialah mahal. RM50 boleh jadi sangat murah bila masalah dia betul-betul selesai, dan RM50 yang sama boleh terasa terlalu mahal kalau dia sendiri tak nampak apa gunanya.\n\nSebelum bagi harga atau terus buat diskaun, cuba gali dulu apa masalah sebenar yang dia nak selesaikan hari ini. Bila dia sendiri nampak nilai dan kesannya, soal harga selalunya jatuh nombor dua.\n\nAwak selalu dapat alasan \"mahal\" dekat produk harga berapa? Cuba kongsi dekat komen.\n\nNak belajar susun ayat closing dan follow up Wassap dengan lebih tenang dan beradab? Follow @dharmasyamim dan semak panduan penuh di link bio (ayatclosing.my).\n\n#SirDharma #AdabClosing #AyatClosing #TipsClosing #ClosingWhatsApp #UsahawanMalaysia",
       "video_url": "https://res.cloudinary.com/qwpwajil/video/upload/v1795784661/meta-auto/sir-dharma-syamim/reels/c0246/sstgcv6hxxfif9kb6ulz.mp4",
-      "cover_url": "https://res.cloudinary.com/qwpwajil/image/upload/v1795784677/meta-auto/sir-dharma-syamim/reels/c0246/h693rrr5u8sdfexh1dlv.png"
+      "cover_url": "https://res.cloudinary.com/qwpwajil/image/upload/v1795784677/meta-auto/sir-dharma-syamim/reels/c0246/h693rrr5u8sdfexh1dlv.png",
+      "published_at": "2026-11-27T21:59:44+08:00",
+      "meta_result": {
+        "facebook": {
+          "success": true,
+          "message": "Video is Processing. To check the status of the video, please follow the instructions listed at https://developers.facebook.com/docs/video-api/guides/reels-publishing#get-the-upload-status.",
+          "post_id": "1733879978748495",
+          "video_id": "1702654094856116"
+        },
+        "instagram": {
+          "id": "18102946985432770"
+        },
+        "facebook_story": {
+          "success": true,
+          "message": "Video is Processing. To check the status of the video, please follow the instructions listed at https://developers.facebook.com/docs/page-stories-api.",
+          "post_id": "1466713561557375",
+          "video_id": "1000427275980191"
+        },
+        "instagram_story": {
+          "id": "18106510823550852"
+        }
+      }
     },
     {
       "id": "w1-05-sat-am",
