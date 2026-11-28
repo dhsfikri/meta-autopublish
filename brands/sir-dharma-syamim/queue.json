@@ -249,7 +249,7 @@
     {
       "id": "w1-06-sat-pm",
       "scheduled_at": "2026-11-28T20:30:00+08:00",
-      "status": "pending",
+      "status": "published",
       "format": "carousel",
       "pillar": "Soft-Sell",
       "theme": "iconic_dark",
@@ -259,7 +259,24 @@
         "https://res.cloudinary.com/qwpwajil/image/upload/v1795664689/meta-auto/sir-dharma-syamim/week1-iconic/w1-06-sat-pm/br72heyz0xa3gn4v8qka.jpg",
         "https://res.cloudinary.com/qwpwajil/image/upload/v1795664691/meta-auto/sir-dharma-syamim/week1-iconic/w1-06-sat-pm/fpg2fo71pncwykhf4czp.jpg",
         "https://res.cloudinary.com/qwpwajil/image/upload/v1795664693/meta-auto/sir-dharma-syamim/week1-iconic/w1-06-sat-pm/vjvizlsvvnwoxsfp5adz.jpg"
-      ]
+      ],
+      "published_at": "2026-11-28T21:43:52+08:00",
+      "meta_result": {
+        "facebook": {
+          "id": "111701606844448_1735066511963175",
+          "post_supports_client_mutation_id": true
+        },
+        "instagram": {
+          "id": "17913534159667851"
+        },
+        "facebook_story": {
+          "success": true,
+          "message": "Video is Processing. To check the status of the video, please follow the instructions listed at https://developers.facebook.com/docs/page-stories-api.",
+          "post_id": "1523570076577273",
+          "video_id": "1169768065409549"
+        },
+        "instagram_story_error": "1"
+      }
     },
     {
       "id": "w1-07-sun-am",
